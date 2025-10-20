@@ -1,8 +1,8 @@
 """
-URL configuration for ecsite project.
+URL configuration for assignment project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
+    https://docs.djangoproject.com/en/5.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -17,16 +17,15 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from assignment.views import initialize_data, UserViewSet
 from rest_framework.routers import DefaultRouter
-from .views import ItemViewSet, CartViewSet, initialize_data
+
 
 router = DefaultRouter()
-router.register(r"items", ItemViewSet, basename="item")
-router.register(r"cart", CartViewSet, basename="cart")
+router.register(r"user", UserViewSet, basename="user")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include(router.urls)),
-    # DO NOT EDIT
-    path("initialize/", initialize_data, name="initialize_data"),
+    path("init_data/", initialize_data, name="initialize_data"),
 ]

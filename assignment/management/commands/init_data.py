@@ -1,7 +1,7 @@
 import json
 import os
 from django.core.management.base import BaseCommand
-from ecsite.models import Item, User
+from assignment.models import User
 
 
 class Command(BaseCommand):
@@ -11,7 +11,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        Item.objects.all().delete()
         User.objects.all().delete()
 
         self.stdout.write(self.style.SUCCESS("All existing item data has been deleted"))
@@ -21,16 +20,8 @@ class Command(BaseCommand):
             json_file_path = os.path.join(os.path.dirname(__file__), file_name)
 
             with open(json_file_path) as json_file:
-                data = json.load(json_file)
-                items = [
-                    Item(
-                        name=item["name"],
-                        price=item["price"],
-                        quantity=item["quantity"],
-                    )
-                    for item in data
-                ]
-                Item.objects.bulk_create(items)
+                _ = json.load(json_file)
+                # Handle the data as needed, e.g., creating User objects
 
             User.objects.create_superuser(
                 "testuser", email="testuser@example.com", password="testpassword"
