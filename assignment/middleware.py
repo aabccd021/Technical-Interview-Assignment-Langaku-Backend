@@ -1,9 +1,9 @@
+import logging
+
 from django.contrib.auth import login
 from django.http import HttpResponse
 
 from assignment.models import User
-
-import logging
 
 logger = logging.getLogger(__name__)
 
