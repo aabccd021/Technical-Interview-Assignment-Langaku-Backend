@@ -25,8 +25,7 @@
 
       treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs {
         programs.nixfmt.enable = true;
-        programs.black.enable = true;
-        programs.isort.enable = true;
+        programs.ruff-format.enable = true;
       };
 
       workspace = inputs.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
