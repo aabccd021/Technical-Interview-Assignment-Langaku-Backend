@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from rest_framework import status
 import uuid
+import datetime
 
 
 @pytest.mark.django_db
@@ -22,3 +23,6 @@ def test_recordsjson_with_timestamp_success():
         {"from": "2024-01-01", "to": "2024-01-03", "granularity": "day"},
     )
     assert response.status_code == status.HTTP_200_OK
+    assert response.data == [
+        {"period": datetime.datetime(2024, 1, 2, 0, 0), "average_words_learned": 42.0},
+    ]
