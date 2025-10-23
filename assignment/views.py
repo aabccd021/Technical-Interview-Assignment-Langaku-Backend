@@ -51,7 +51,7 @@ def recordsjson(request):
 
 @extend_schema(
     parameters=[UserSummaryQuerySerializer],
-    responses={200: UserSummaryResponseSerializer},
+    responses={200: UserSummaryResponseSerializer(many=True)},
 )
 @api_view(["GET"])
 def user_summary(request, user_id):
@@ -84,4 +84,5 @@ def user_summary(request, user_id):
         columns = [col[0] for col in cursor.description]
         rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    return Response(rows, status=status.HTTP_200_OK)
+    serialized_rows = UserSummaryResponseSerializer(rows, many=True).data
+    return Response(serialized_rows, status=status.HTTP_200_OK)

@@ -14,6 +14,6 @@ class UserSummaryQuerySerializer(serializers.Serializer):
     granularity = serializers.ChoiceField(choices=["hour", "day", "month"])
 
 
-class UserSummaryResponseSerializer(serializers.ListSerializer):
+class UserSummaryResponseSerializer(serializers.Serializer):
     period = serializers.DateTimeField()
-    granularity = serializers.ChoiceField(choices=["hour", "day", "month"])
+    average_words_learned = serializers.FloatField()

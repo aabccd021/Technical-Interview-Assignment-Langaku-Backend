@@ -34,7 +34,7 @@ paths:
           description: No response body
   /users/{user_id}/summary:
     get:
-      operationId: users_summary_retrieve
+      operationId: users_summary_list
       description: Simple moving average of words learned by a user for specific range
         and granularity
       parameters:
@@ -77,9 +77,25 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSummaryResponse'
+          description: ''
 components:
   schemas:
+    GranularityEnum:
+      enum:
+      - hour
+      - day
+      - month
+      type: string
+      description: |-
+        * `hour` - hour
+        * `day` - day
+        * `month` - month
     RecordsJson:
       type: object
       properties:
@@ -98,6 +114,17 @@ components:
       - request_id
       - user_id
       - word_count
+    UserSummaryResponse:
+      type: object
+      properties:
+        period:
+          type: string
+          format: date-time
+        granularity:
+          $ref: '#/components/schemas/GranularityEnum'
+      required:
+      - granularity
+      - period
   securitySchemes:
     basicAuth:
       type: http
