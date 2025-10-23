@@ -10,6 +10,7 @@ from .serializers import (
     UserSummaryResponseSerializer,
 )
 
+
 @extend_schema(
     request=RecordsJsonSerializer,
     responses={201: None, 409: None, 400: None},
