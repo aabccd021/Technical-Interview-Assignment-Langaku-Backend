@@ -39,7 +39,7 @@ def test_recordsjson_multiuser():
             "request_id": str(uuid.uuid4()),
             "user_id": "user1",
             "word_count": 30,
-            "timestamp": "2024-01-01T10:00:00Z",
+            "timestamp": "2024-01-02T10:00:00Z",
         },
     )
     client.post(
@@ -48,24 +48,26 @@ def test_recordsjson_multiuser():
             "request_id": str(uuid.uuid4()),
             "user_id": "user2",
             "word_count": 50,
-            "timestamp": "2024-01-01T11:00:00Z",
+            "timestamp": "2024-01-02T11:00:00Z",
         },
     )
     response_user1 = client.get(
         "/users/user1/summary",
-        {"from": "2024-01-01", "to": "2024-01-02", "granularity": "day"},
+        {"from": "2024-01-01", "to": "2024-01-03", "granularity": "day"},
     )
     response_user2 = client.get(
         "/users/user2/summary",
-        {"from": "2024-01-01", "to": "2024-01-02", "granularity": "day"},
+        {"from": "2024-01-01", "to": "2024-01-03", "granularity": "day"},
     )
     assert response_user1.status_code == status.HTTP_200_OK
     assert response_user1.data == [
-        {"period": "2024-01-01T00:00:00Z", "average_words_learned": 30.0},
-        {"period": "2024-01-02T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-01T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-02T00:00:00Z", "average_words_learned": 30.0},
+        {"period": "2024-01-03T00:00:00Z", "average_words_learned": 0.0},
     ]
     assert response_user2.status_code == status.HTTP_200_OK
     assert response_user2.data == [
-        {"period": "2024-01-01T00:00:00Z", "average_words_learned": 50.0},
-        {"period": "2024-01-02T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-01T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-02T00:00:00Z", "average_words_learned": 50.0},
+        {"period": "2024-01-03T00:00:00Z", "average_words_learned": 0.0},
     ]
