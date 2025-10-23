@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import datetime
 
 
 class RecordsJsonSerializer(serializers.Serializer):
@@ -15,5 +16,5 @@ class UserSummaryQuerySerializer(serializers.Serializer):
 
 
 class UserSummaryResponseSerializer(serializers.Serializer):
-    period = serializers.DateTimeField()
+    period = serializers.DateTimeField(default_timezone=datetime.timezone.utc)
     average_words_learned = serializers.FloatField()
