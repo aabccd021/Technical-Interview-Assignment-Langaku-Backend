@@ -3,6 +3,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 import uuid
 
+
 @pytest.mark.django_db
 def test_recordsjson_success():
     request = {
