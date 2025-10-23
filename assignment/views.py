@@ -10,7 +10,6 @@ from .serializers import (
     UserSummaryResponseSerializer,
 )
 
-
 @extend_schema(
     request=RecordsJsonSerializer,
     responses={201: None, 409: None, 400: None},
@@ -72,6 +71,9 @@ def user_summary(request, user_id):
     from_date = query_params.get("from")
     to_date = query_params.get("to")
     granularity = query_params.get("granularity")
+
+    # We will not check corner cases like from_date > to_date for simplicity
+    # We assume the client is well-behaved and always sends valid ranges
 
     with connection.cursor() as cursor:
         cursor.execute(

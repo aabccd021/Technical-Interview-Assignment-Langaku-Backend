@@ -123,8 +123,44 @@ As you can see, this will also significantly simplify the SQL query, and reduce 
 
 #### Alternative solution / future improvement 2
 
-calculate on server
+When our application scales up, and we have a lot of learning log entries,
+the aggregation query might become slow, as it needs to scan a lot of rows in the `learning_log` table.
+
+To optimize this, we can denormalize the data by pre-aggregating the learning log entries into a separate table.
+For example, we can have a `learning_log_aggregates` table:
+
+```sql
+CREATE TABLE learning_log_aggregates (
+    user_id UUID,
+    period TIMESTAMP,
+    granularity VARCHAR(10),
+    total_word_count INT,
+    entry_count INT,
+    PRIMARY KEY (user_id, period, granularity)
+);
+```
+
+Then every time a new learning log entry is created, we also update the corresponding aggregate entry.
+When querying for aggregated data, we simply select from the `learning_log_aggregates` table.
+Actually we can just use this table if we don't need to store all the learning log entries,
+just want to know the summarized data.
+
+```sql
+SELECT
+    period,
+    (total_word_count / entry_count) AS average_words_learned
+FROM learning_log_aggregates
+WHERE user_id = %(user_id)s 
+  AND period BETWEEN %(from_date)s AND %(to_date)s
+  AND granularity = %(granularity)s
+ORDER BY period;
+```
 
 #### Alternative solution / future improvement 3
 
-Caching past results
+If the `to` parameter is in the past, that means the data will not change anymore.
+We can cache the aggregated results for such queries, so that subsequent requests with the same parameters can be served faster.
+
+We can use a simple in-memory KV database like Redis or python memory for this.
+One thing to consider is how we construct the key, it needs to be consistent,
+so simply stringifying the parameters dictionary might not be a good idea.
