@@ -110,3 +110,49 @@ def test_user_summary_no_activity():
         {"period": "2024-01-02T00:00:00Z", "average_words_learned": 0.0},
         {"period": "2024-01-03T00:00:00Z", "average_words_learned": 0.0},
     ]
+
+
+@pytest.mark.django_db
+def test_user_summary_active_on_even_days():
+    client = APIClient()
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 100,
+            "timestamp": "2024-01-02T09:00:00Z",
+        },
+    )
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 200,
+            "timestamp": "2024-01-04T09:00:00Z",
+        },
+    )
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 300,
+            "timestamp": "2024-01-06T09:00:00Z",
+        },
+    )
+    response = client.get(
+        "/users/langaku/summary",
+        {"from": "2024-01-01", "to": "2024-01-07", "granularity": "day"},
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == [
+        {"period": "2024-01-01T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-02T00:00:00Z", "average_words_learned": 100.0},
+        {"period": "2024-01-03T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-04T00:00:00Z", "average_words_learned": 200.0},
+        {"period": "2024-01-05T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-06T00:00:00Z", "average_words_learned": 300.0},
+        {"period": "2024-01-07T00:00:00Z", "average_words_learned": 0.0},
+    ]
