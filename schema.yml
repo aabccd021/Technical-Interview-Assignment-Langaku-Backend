@@ -6,6 +6,7 @@ paths:
   /recordsjson:
     post:
       operationId: recordsjson_create
+      description: Record learning activity
       tags:
       - recordsjson
       requestBody:
@@ -37,11 +38,13 @@ components:
       type: object
       properties:
         request_id:
-          type: integer
+          type: string
+          format: uuid
         user_id:
-          type: integer
+          type: string
         word_count:
           type: integer
+          minimum: 0
         timestamp:
           type: string
           format: date-time

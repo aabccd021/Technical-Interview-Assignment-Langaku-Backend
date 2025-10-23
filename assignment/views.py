@@ -13,6 +13,9 @@ from .serializers import RecordsJsonSerializer
 )
 @api_view(["POST"])
 def recordsjson(request):
+    """
+    Record learning activity
+    """
     serializer = RecordsJsonSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

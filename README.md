@@ -7,6 +7,8 @@
 ## Initial Setup
 
 ```sh
+uv sync --all-groups
+
 # run test
 uv run poe test
 
