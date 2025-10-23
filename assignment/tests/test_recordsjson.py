@@ -11,7 +11,10 @@ def test_recordsjson_success():
         "user_id": "langaku",
         "word_count": 42,
     }
-    response = APIClient().post("/recordsjson", request, format="json")
+    response = APIClient().post(
+        "/recordsjson",
+        request,
+    )
     assert response.status_code == status.HTTP_201_CREATED
 
 
@@ -23,8 +26,14 @@ def test_duplicate_request_id_idempotent():
         "user_id": "langaku",
         "word_count": 42,
     }
-    client.post("/recordsjson", request, format="json")
-    response = client.post("/recordsjson", request, format="json")
+    client.post(
+        "/recordsjson",
+        request,
+    )
+    response = client.post(
+        "/recordsjson",
+        request,
+    )
     assert response.status_code == status.HTTP_409_CONFLICT
 
 
@@ -35,7 +44,10 @@ def test_missing_field_bad_request():
         "user_id": "langaku",
         # "word_count" is missing
     }
-    response = APIClient().post("/recordsjson", request, format="json")
+    response = APIClient().post(
+        "/recordsjson",
+        request,
+    )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
@@ -46,7 +58,10 @@ def test_invalid_field_type_bad_request():
         "user_id": "langaku",
         "word_count": "forty-two",  # invalid type
     }
-    response = APIClient().post("/recordsjson", request, format="json")
+    response = APIClient().post(
+        "/recordsjson",
+        request,
+    )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
@@ -58,7 +73,10 @@ def test_recordsjson_with_timestamp_success():
         "word_count": 42,
         "timestamp": "2024-01-01T12:00:00Z",
     }
-    response = APIClient().post("/recordsjson", request, format="json")
+    response = APIClient().post(
+        "/recordsjson",
+        request,
+    )
     assert response.status_code == status.HTTP_201_CREATED
 
 
@@ -70,5 +88,8 @@ def test_timestamp_with_timezone_success():
         "word_count": 42,
         "timestamp": "2024-01-01T12:00:00+09:00",
     }
-    response = APIClient().post("/recordsjson", request, format="json")
+    response = APIClient().post(
+        "/recordsjson",
+        request,
+    )
     assert response.status_code == status.HTTP_201_CREATED
