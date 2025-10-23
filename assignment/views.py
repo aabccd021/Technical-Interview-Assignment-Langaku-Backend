@@ -35,9 +35,14 @@ def recordsjson(request):
             cursor.execute(
                 """
                 INSERT INTO learning_log (request_id, user_id, word_count, timestamp)
-                VALUES (%s, %s, %s, COALESCE(%s, CURRENT_TIMESTAMP))
+                VALUES (%(request_id)s, %(user_id)s, %(word_count)s, COALESCE(%(timestamp)s, CURRENT_TIMESTAMP))
                 """,
-                [request_id, user_id, word_count, timestamp],
+                {
+                    "request_id": request_id,
+                    "user_id": user_id,
+                    "word_count": word_count,
+                    "timestamp": timestamp,
+                },
             )
         return Response(None, status=status.HTTP_201_CREATED)
     except Exception as e:
