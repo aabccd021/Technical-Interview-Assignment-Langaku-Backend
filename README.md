@@ -33,8 +33,6 @@ by running `uv run poe generate-schema`.
 
 ### Avoiding duplicate request entries (idempotency)
 
-#### Problem
-
 A client might send the same request multiple times, either due to network issues or user actions.
 To avoid creating duplicate entries in the database, our API needs to be idempotent.
 
@@ -51,7 +49,7 @@ When duplicated requests arrive,
 we will catch the unique constraint violation error from the database,
 and return 409 Conflict response to the client.
 
-#### Alternative solution 1
+#### Alternative solution / future improvement 1
 
 We can use another storage to keep track of processed `request_id`s, such as Redis or simply python 
 list in memory. Old `request_id`s can be expired after some time.
@@ -62,7 +60,7 @@ Also, we don't need to store `request_id` in the main database, as it's never us
 But doing this with python's memory will not work well with multiple django processes invoked by wsgi server.
 Using Redis will work, but it adds operational complexity.
 
-#### Alternative solution 2
+#### Alternative solution / future improvement 2
 
 We can select and check for existing entries with the same `request_id` before inserting a new entry.
 The code will look better this way, as we don't need to "stringly match" database error messages like in the implemented solution.
@@ -74,7 +72,7 @@ Also since this solution is not atomic,
 there might be a race condition if two identical requests arrive at the same time,
 which will require us to handle unique constraint violation error anyway.
 
-#### Alternative solution 3
+#### Alternative solution / future improvement 3
 
 Instead of returning 409 Conflict for duplicate requests, we can return 200 OK with the existing entry data.
 On the SQL query we will do `ON CONFLICT ... DO NOTHING` to avoid unique constraint violation error.
@@ -83,12 +81,14 @@ This solution is totally valid.
 The only reason we return 409 Conflict in the implemented solution is to make the unit tests simpler. 
 We can test duplicate request handling without needing to `SELECT` from the database after the insert.
 
-## Misc
+
+### Aggregating learning data by time periods
+
+#### Implemented solution
 
 https://www.postgresql.org/docs/current/functions-srf.html#FUNCTIONS-SRF
 
-
-## Future improvements
+#### Alternative solution / future improvement 3
 
 ```sql
 SELECT
@@ -100,5 +100,7 @@ WHERE user_id = %(user_id)s
 GROUP BY period
 ORDER BY period;
 ```
+
+#### Caching past results
 
 cache

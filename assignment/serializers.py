@@ -10,7 +10,7 @@ class RecordsJsonSerializer(serializers.Serializer):
 
 
 class UserSummaryQuerySerializer(serializers.Serializer):
-    vars()["from"] = serializers.DateTimeField()
+    vars()["from"] = serializers.DateTimeField()  #
     to = serializers.DateTimeField()
     granularity = serializers.ChoiceField(choices=["hour", "day", "month"])
 
