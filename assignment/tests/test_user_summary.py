@@ -156,3 +156,36 @@ def test_user_summary_active_on_even_days():
         {"period": "2024-01-06T00:00:00Z", "average_words_learned": 300.0},
         {"period": "2024-01-07T00:00:00Z", "average_words_learned": 0.0},
     ]
+
+
+@pytest.mark.django_db
+def test_user_summary_multiple_activities_per_day():
+    client = APIClient()
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 50,
+            "timestamp": "2024-01-03T08:00:00Z",
+        },
+    )
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 70,
+            "timestamp": "2024-01-03T15:00:00Z",
+        },
+    )
+    response = client.get(
+        "/users/langaku/summary",
+        {"from": "2024-01-02", "to": "2024-01-04", "granularity": "day"},
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == [
+        {"period": "2024-01-02T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-03T00:00:00Z", "average_words_learned": 60.0},
+        {"period": "2024-01-04T00:00:00Z", "average_words_learned": 0.0},
+    ]
