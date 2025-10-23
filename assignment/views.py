@@ -21,13 +21,7 @@ def recordsjson(request):
             )
         return Response(None, status=status.HTTP_201_CREATED)
     except IntegrityError:
-        return Response(
-            {"detail": "Duplicate request_id."},
-            status=status.HTTP_409_CONFLICT,
-        )
+        return Response(None, status=status.HTTP_409_CONFLICT)
     except Exception as e:
         print(e)
-        return Response(
-            {"detail": "Duplicate request_id or integrity error."},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return Response(None, status=status.HTTP_400_BAD_REQUEST)
