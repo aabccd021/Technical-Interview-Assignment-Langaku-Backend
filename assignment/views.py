@@ -77,14 +77,20 @@ def user_summary(request, user_id):
         cursor.execute(
             """
             SELECT
-                DATE_TRUNC(%s, timestamp) AS period,
+                DATE_TRUNC(%(granularity)s, timestamp) AS period,
                 AVG(word_count) AS average_words_learned
             FROM learning_log
-            WHERE user_id = %s AND timestamp BETWEEN %s AND %s
+            WHERE user_id = %(user_id)s 
+              AND timestamp BETWEEN %(from_date)s AND %(to_date)s
             GROUP BY period
             ORDER BY period;
             """,
-            [granularity, user_id, from_date, to_date],
+            {
+                "user_id": user_id,
+                "from_date": from_date,
+                "to_date": to_date,
+                "granularity": granularity,
+            },
         )
         columns = [col[0] for col in cursor.description]
         rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
