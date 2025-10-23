@@ -6,3 +6,9 @@ class RecordsJsonSerializer(serializers.Serializer):
     user_id = serializers.CharField()
     word_count = serializers.IntegerField(min_value=0)
     timestamp = serializers.DateTimeField(required=False)
+
+
+class UserSummarySerializer(serializers.Serializer):
+    vars()["from"] = serializers.DateTimeField()
+    to = serializers.DateTimeField()
+    granularity = serializers.ChoiceField(choices=["hour", "day", "month"])
