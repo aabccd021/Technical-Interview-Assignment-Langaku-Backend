@@ -7,15 +7,14 @@ import uuid
 @pytest.mark.django_db
 def test_recordsjson_with_timestamp_success():
     client = APIClient()
-    request = {
-        "request_id": str(uuid.uuid4()),
-        "user_id": "langaku",
-        "word_count": 42,
-        "timestamp": "2024-01-02T12:00:00Z",
-    }
     client.post(
         "/recordsjson",
-        request,
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 42,
+            "timestamp": "2024-01-02T12:00:00Z",
+        },
     )
 
     response = client.get(
