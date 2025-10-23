@@ -1,9 +1,7 @@
 from pathlib import Path
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-4x21@2t7v6skhvmg9-8wslzd+9-g@5_!v(wrmv3f#a7mi$e@ze"
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 INSTALLED_APPS = [
@@ -31,8 +29,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = "assignment.wsgi.application"
 
 DATABASES = {
     "default": {
