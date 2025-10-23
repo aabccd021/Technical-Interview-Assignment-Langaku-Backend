@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.db import connection, IntegrityError
 from drf_spectacular.utils import extend_schema
 
-from .serializers import RecordsJsonSerializer, UserSummarySerializer
+from .serializers import RecordsJsonSerializer, UserSummaryQuerySerializer
 
 
 @extend_schema(
@@ -46,14 +46,14 @@ def recordsjson(request):
 
 
 @extend_schema(
-    parameters=[UserSummarySerializer],
+    parameters=[UserSummaryQuerySerializer],
 )
 @api_view(["GET"])
 def user_summary(request, user_id):
     """
     Simple moving average of words learned by a user for specific range and granularity
     """
-    serializer = UserSummarySerializer(data=request.query_params)
+    serializer = UserSummaryQuerySerializer(data=request.query_params)
     if not serializer.is_valid():
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

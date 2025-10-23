@@ -8,7 +8,7 @@ class RecordsJsonSerializer(serializers.Serializer):
     timestamp = serializers.DateTimeField(required=False)
 
 
-class UserSummarySerializer(serializers.Serializer):
+class UserSummaryQuerySerializer(serializers.Serializer):
     vars()["from"] = serializers.DateTimeField()
     to = serializers.DateTimeField()
     granularity = serializers.ChoiceField(choices=["hour", "day", "month"])

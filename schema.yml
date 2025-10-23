@@ -32,6 +32,52 @@ paths:
           description: No response body
         '400':
           description: No response body
+  /users/{user_id}/summary:
+    get:
+      operationId: users_summary_retrieve
+      description: Simple moving average of words learned by a user for specific range
+        and granularity
+      parameters:
+      - in: query
+        name: from
+        schema:
+          type: string
+          format: date-time
+        required: true
+      - in: query
+        name: granularity
+        schema:
+          enum:
+          - hour
+          - day
+          - month
+          type: string
+          minLength: 1
+        description: |-
+          * `hour` - hour
+          * `day` - day
+          * `month` - month
+        required: true
+      - in: query
+        name: to
+        schema:
+          type: string
+          format: date-time
+        required: true
+      - in: path
+        name: user_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
 components:
   schemas:
     RecordsJson:
