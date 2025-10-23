@@ -74,6 +74,14 @@ This solution is totally valid.
 The only reason we return `409 Conflict` in the implemented solution is to make the unit tests simpler. 
 We can test duplicate request handling without needing to `SELECT` from the database after the insert.
 
+### Future improvement 4: Misc
+
+- Implement rate limiting to prevent abuse.
+- Add database indexes on frequently queried columns.
+- Validate input parameters for logical consistency.
+- Paginate or limit large responses.
+- Add more detailed OpenAPI schema documentation and error examples.
+
 ## Aggregating learning data by time periods
 
 ### Implemented solution: Using SQL aggregation functions
@@ -117,6 +125,8 @@ As you can see, this also significantly simplifies the SQL query, and reduces th
 
 When our application scales up and we have a lot of learning log entries,
 the aggregation query might become slow, as it needs to scan a lot of rows in the `learning_log` table.
+Although we can scale by adding readonly replicas to scale the read queries,
+the aggregation query will still be slow if the table is very large.
 
 To optimize this, we can denormalize the data by pre-aggregating the learning log entries into a separate table.
 For example, we can have a `learning_log_aggregates` table:
