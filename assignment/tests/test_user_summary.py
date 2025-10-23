@@ -273,3 +273,37 @@ def test_user_summary_monthly_granularity():
         {"period": "2024-03-01T00:00:00Z", "average_words_learned": 600.0},
         {"period": "2024-04-01T00:00:00Z", "average_words_learned": 0.0},
     ]
+
+
+@pytest.mark.django_db
+def test_user_summary_different_timezones():
+    client = APIClient()
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 80,
+            "timestamp": "2024-01-10T12:00:00+07:00",
+        },
+    )
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 120,
+            "timestamp": "2024-01-10T14:00:00+09:00",
+        },
+    )
+    response = client.get(
+        "/users/langaku/summary",
+        {"from": "2024-01-09", "to": "2024-01-12", "granularity": "day"},
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == [
+        {"period": "2024-01-09T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-10T00:00:00Z", "average_words_learned": 100.0},
+        {"period": "2024-01-11T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-12T00:00:00Z", "average_words_learned": 0.0},
+    ]
