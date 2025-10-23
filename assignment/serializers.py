@@ -10,7 +10,12 @@ class RecordsJsonSerializer(serializers.Serializer):
 
 
 class UserSummaryQuerySerializer(serializers.Serializer):
-    vars()["from"] = serializers.DateTimeField()  #
+    # We could have used `source='from'` and use `from_date` as the field name,
+    # but this will require us to write `from_date` when mocking requests in tests.
+    # So I decided to keep using `from` directly, making it closer to the actual request parameter
+    # sent by the client.
+    vars()["from"] = serializers.DateTimeField()
+
     to = serializers.DateTimeField()
     granularity = serializers.ChoiceField(choices=["hour", "day", "month"])
 
