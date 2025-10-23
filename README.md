@@ -1,4 +1,4 @@
-# Assignment Template
+# Daily Aggregator
 
 ## Requirements
 - [uv](https://github.com/astral-sh/uv)
