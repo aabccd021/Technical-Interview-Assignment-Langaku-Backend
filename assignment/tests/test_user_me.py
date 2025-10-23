@@ -11,5 +11,5 @@ def test_recordsjson_success():
         "word_count": 42,
     }
     response = APIClient().post("/recordsjson", request, format="json")
+    assert response.status_code == status.HTTP_201_CREATED
     assert response.data == "OK"
-    assert response.status_code == status.HTTP_200_OK
