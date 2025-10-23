@@ -6,13 +6,10 @@ from django.db import connection, IntegrityError
 
 @api_view(["POST"])
 def recordsjson(request):
-    try:
-        request_id = request.data["request_id"]
-        user_id = request.data["user_id"]
-        word_count = request.data["word_count"]
-        timestamp = request.data.get("timestamp", None)
-    except KeyError as e:
-        return Response(None, status=status.HTTP_400_BAD_REQUEST)
+    request_id = request.data.get("request_id", None)
+    user_id = request.data.get("user_id", None)
+    word_count = request.data.get("word_count", None)
+    timestamp = request.data.get("timestamp", None)
 
     try:
         with connection.cursor() as cursor:
@@ -25,8 +22,12 @@ def recordsjson(request):
             )
         return Response(None, status=status.HTTP_201_CREATED)
     except IntegrityError as e:
+        if str(e).startswith(
+            'duplicate key value violates unique constraint "learning_log_pkey"'
+        ):
+            return Response(None, status=status.HTTP_409_CONFLICT)
         print(e)
-        return Response(None, status=status.HTTP_409_CONFLICT)
+        return Response(None, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
         return Response(None, status=status.HTTP_400_BAD_REQUEST)
