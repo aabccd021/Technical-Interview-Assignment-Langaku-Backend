@@ -1,12 +1,13 @@
 # Assignment Template
 
 ## Requirement
-- uv
-- docker
+- [uv](https://github.com/astral-sh/uv)
+- Docker
 
-## Initial Setup
+## Getting Started
 
 ```sh
+# install dependencies
 uv sync --all-groups
 
 # run test
@@ -21,7 +22,17 @@ uv run poe lint
 # format code
 uv run poe format
 ```
+
+## API Documentation
+
+API documentation is available as OpenAPI schema at [schema.yml](./schema.yml).
+The schema is automatically generated from codebase using [drf-spectacular](https://github.com/tfranzel/drf-spectacular),
+by running `uv run poe generate-schema`.
+
+##
+
 https://www.postgresql.org/docs/current/functions-srf.html#FUNCTIONS-SRF
+
 
 ## Future improvements
 
