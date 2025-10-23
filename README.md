@@ -40,7 +40,7 @@ We will assume that the client will provide a unique `request_id` UUID for each 
 To solve this, we simply store the `request_id` along with the request data in the database,
 with a unique constraint on the `request_id` column. When duplicated requests arrive, 
 we will catch the unique constraint violation error from the database,
-and return 409 Conflict response to the client.
+and return `409 Conflict` response to the client.
 
 ### Future improvement 1: Using Redis for `request_id`s
 
@@ -67,11 +67,11 @@ which will require us to handle unique constraint violation error anyway.
 
 ### Future improvement 3: Do nothing on conflict
 
-Instead of returning 409 Conflict for duplicate requests, we can just return 200 OK.
+Instead of returning `409 Conflict` for duplicate requests, we can just return `200 OK`.
 On the SQL query we will do `ON CONFLICT ... DO NOTHING` to avoid unique constraint violation error.
 
 This solution is totally valid. 
-The only reason we return 409 Conflict in the implemented solution is to make the unit tests simpler. 
+The only reason we return `409 Conflict` in the implemented solution is to make the unit tests simpler. 
 We can test duplicate request handling without needing to `SELECT` from the database after the insert.
 
 
