@@ -42,7 +42,7 @@ with a unique constraint on the `request_id` column. When duplicated requests ar
 we will catch the unique constraint violation error from the database,
 and return 409 Conflict response to the client.
 
-### Alternative solution / future improvement 1: Using Redis for `request_id`s
+### Future improvement 1: Using Redis for `request_id`s
 
 We can use another storage to keep track of processed `request_id`s, such as Redis or simply python 
 list in memory. Old `request_id`s can be expired after some time.
@@ -53,7 +53,7 @@ Also, we don't need to store `request_id` in the main database, as it's never us
 But doing this with python's memory will not work well with multiple django processes invoked by wsgi server.
 Using Redis will work, but it adds operational complexity.
 
-### Alternative solution / future improvement 2: Pre-checking for existing `request_id`
+### Future improvement 2: Pre-checking for existing `request_id`
 
 We can select and check for existing entries with the same `request_id` before inserting a new entry.
 The code will look better this way, as we don't need to "stringly match" database error messages like in the implemented solution.
@@ -65,7 +65,7 @@ Also since this solution is not atomic,
 there might be a race condition if two identical requests arrive at the same time,
 which will require us to handle unique constraint violation error anyway.
 
-### Alternative solution / future improvement 3: Do nothing on conflict
+### Future improvement 3: Do nothing on conflict
 
 Instead of returning 409 Conflict for duplicate requests, we can just return 200 OK.
 On the SQL query we will do `ON CONFLICT ... DO NOTHING` to avoid unique constraint violation error.
@@ -90,7 +90,7 @@ SQL query is declarative and a bit hard to read, so here is an imperative pseudo
 The [`DATE_TRUNC`](https://www.postgresql.org/docs/current/functions-srf.html#FUNCTIONS-SRF)
 function was used to determine "period" group of a timestamp.
 
-### Alternative solution / future improvement 1: Returning only periods with data
+### Future improvement 1: Returning only periods with data
 
 The implemented solution will return all periods even if there is no data for some periods.
 This will simplify the client code, as the client will not need to fill in missing periods,
@@ -114,7 +114,7 @@ ORDER BY period;
 
 As you can see, this will also significantly simplify the SQL query, and reduce the load on the database.
 
-### Alternative solution / future improvement 2: Pre-aggregation and denormalization
+### Future improvement 2: Pre-aggregation and denormalization
 
 When our application scales up, and we have a lot of learning log entries,
 the aggregation query might become slow, as it needs to scan a lot of rows in the `learning_log` table.
@@ -149,7 +149,7 @@ WHERE user_id = %(user_id)s
 ORDER BY period;
 ```
 
-### Alternative solution / future improvement 3: Caching results for past time periods
+### Future improvement 3: Caching results for past time periods
 
 If the `to` parameter is in the past, that means the data will not change anymore.
 We can cache the aggregated results for such queries, so that subsequent requests with the same parameters can be served faster.
