@@ -6,22 +6,22 @@ from django.db import connection, IntegrityError
 
 @api_view(["POST"])
 def recordsjson(request):
-    request_id = request.data["request_id"]
-    user_id = request.data["user_id"]
-    word_count = request.data["word_count"]
-
     try:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO learning_log (request_id, user_id, word_count)
-                VALUES (%s, %s, %s)
-                """,
-                [request_id, user_id, word_count],
-            )
-        return Response(None, status=status.HTTP_201_CREATED)
-    except IntegrityError:
-        return Response(None, status=status.HTTP_409_CONFLICT)
+        request_id = request.data["request_id"]
+        user_id = request.data["user_id"]
+        word_count = request.data["word_count"]
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO learning_log (request_id, user_id, word_count)
+                    VALUES (%s, %s, %s)
+                    """,
+                    [request_id, user_id, word_count],
+                )
+            return Response(None, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response(None, status=status.HTTP_409_CONFLICT)
     except Exception as e:
         print(e)
         return Response(None, status=status.HTTP_400_BAD_REQUEST)

@@ -26,3 +26,14 @@ def test_duplicate_request_id_idempotent():
     client.post("/recordsjson", request, format="json")
     response = client.post("/recordsjson", request, format="json")
     assert response.status_code == status.HTTP_409_CONFLICT
+
+
+@pytest.mark.django_db
+def test_missing_field_bad_request():
+    request = {
+        "request_id": str(uuid.uuid4()),
+        "user_id": "langaku",
+        # "word_count" is missing
+    }
+    response = APIClient().post("/recordsjson", request, format="json")
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
