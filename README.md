@@ -1,31 +1,24 @@
 # Assignment Template
 
+## Requirement
+- uv
+- docker
+
 ## Initial Setup
 
-- uv is recommended for managing virtual environments.
-
-```
+```sh
+# install dependencies
 uv sync --all-groups
 
-uv run manage.py migrate
-```
-
-### Run tests
-
-```
+# run test
 uv run poe test
-```
 
-### Run server
+# start dev server on localhost:8000
+uv run poe start
 
-```
-uv run manage.py runserver
-```
-
-
-### Lint and format code
-
-```
+# lint code
 uv run poe lint
+
+# format code
 uv run poe format
 ```
