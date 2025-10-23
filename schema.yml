@@ -86,16 +86,6 @@ paths:
           description: ''
 components:
   schemas:
-    GranularityEnum:
-      enum:
-      - hour
-      - day
-      - month
-      type: string
-      description: |-
-        * `hour` - hour
-        * `day` - day
-        * `month` - month
     RecordsJson:
       type: object
       properties:
@@ -120,10 +110,11 @@ components:
         period:
           type: string
           format: date-time
-        granularity:
-          $ref: '#/components/schemas/GranularityEnum'
+        average_words_learned:
+          type: number
+          format: double
       required:
-      - granularity
+      - average_words_learned
       - period
   securitySchemes:
     basicAuth:
