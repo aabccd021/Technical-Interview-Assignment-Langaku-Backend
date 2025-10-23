@@ -1,5 +1,5 @@
 from django.urls import path
 
-from assignment.views import initialize_data
+from assignment.views import recordsjson
 
-urlpatterns = [path("init_data/", initialize_data, name="initialize_data")]
+urlpatterns = [path("recordsjson", recordsjson)]
