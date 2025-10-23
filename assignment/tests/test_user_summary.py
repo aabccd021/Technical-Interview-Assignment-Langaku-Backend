@@ -189,3 +189,49 @@ def test_user_summary_multiple_activities_per_day():
         {"period": "2024-01-03T00:00:00Z", "average_words_learned": 60.0},
         {"period": "2024-01-04T00:00:00Z", "average_words_learned": 0.0},
     ]
+
+
+@pytest.mark.django_db
+def test_user_summary_hourly_granularity():
+    client = APIClient()
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 20,
+            "timestamp": "2024-01-05T10:15:00Z",
+        },
+    )
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 40,
+            "timestamp": "2024-01-05T10:45:00Z",
+        },
+    )
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 60,
+            "timestamp": "2024-01-05T11:30:00Z",
+        },
+    )
+    response = client.get(
+        "/users/langaku/summary",
+        {
+            "from": "2024-01-05T10:00:00Z",
+            "to": "2024-01-05T12:00:00Z",
+            "granularity": "hour",
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == [
+        {"period": "2024-01-05T10:00:00Z", "average_words_learned": 30.0},
+        {"period": "2024-01-05T11:00:00Z", "average_words_learned": 60.0},
+        {"period": "2024-01-05T12:00:00Z", "average_words_learned": 0.0},
+    ]
