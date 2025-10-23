@@ -86,9 +86,27 @@ We can test duplicate request handling without needing to `SELECT` from the data
 
 #### Implemented solution
 
-https://www.postgresql.org/docs/current/functions-srf.html#FUNCTIONS-SRF
+I delegated all the complexity of implementing this feature to PostgreSQL,
+by writing a single SQL query that returns the aggregated data.
 
-#### Alternative solution / future improvement 3
+SQL query is declarative and a bit hard to read, so here is an imperative pseudocode of what the query does:
+1. Generate all "period" from `from` to `to` with the given `granularity` (day, week, month).
+2. For each generated "period", select all learning log entries that belong to that period.
+3. Calculate the average `word_count` for the entries in that period.
+
+The [`DATE_TRUNC`](https://www.postgresql.org/docs/current/functions-srf.html#FUNCTIONS-SRF)
+function was used to determine "period" group of a timestamp.
+
+#### Alternative solution / future improvement 1
+
+The implemented solution will return all periods even if there is no data for some periods.
+This will simplify the client code, as the client will not need to fill in missing periods,
+which is especially useful if we need to implement client code on multiple platforms (web, mobile, etc).
+
+Although this also means we return "useless" data which can be omitted, 
+increasing the amount of data transferred over the network, on both `database -> server` and `server -> client`.
+
+If we want to optimize for smaller data transfer, we can modify the SQL query to only return periods that have data:
 
 ```sql
 SELECT
@@ -101,6 +119,12 @@ GROUP BY period
 ORDER BY period;
 ```
 
-#### Caching past results
+As you can see, this will also significantly simplify the SQL query, and reduce the load on the database.
 
-cache
+#### Alternative solution / future improvement 2
+
+calculate on server
+
+#### Alternative solution / future improvement 3
+
+Caching past results

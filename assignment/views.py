@@ -84,14 +84,14 @@ def user_summary(request, user_id):
                 ) AS period
             )
             SELECT
-                p.period,
-                COALESCE(AVG(l.word_count), 0) AS average_words_learned
-            FROM periods p
-            LEFT JOIN learning_log l
-                ON DATE_TRUNC(%(granularity)s, l.timestamp) = p.period
-                AND l.user_id = %(user_id)s
-            GROUP BY p.period
-            ORDER BY p.period;            
+                periods.period,
+                COALESCE(AVG(learning_log.word_count), 0) AS average_words_learned
+            FROM periods
+            LEFT JOIN learning_log
+                ON DATE_TRUNC(%(granularity)s, learning_log.timestamp) = periods.period
+                AND learning_log.user_id = %(user_id)s
+            GROUP BY periods.period
+            ORDER BY periods.period;            
             """,
             {
                 "user_id": user_id,
