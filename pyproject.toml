@@ -11,6 +11,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "drf-spectacular>=0.28.0",
     "poethepoet>=0.36.0",
     "pytest>=8.4.1",
     "pytest-django>=4.11.1",
@@ -26,3 +27,4 @@ format = "ruff format ."
 pytest = "pytest"
 test = "docker compose run --rm web sh -c 'uv run manage.py migrate && uv run poe pytest'"
 dev = "docker compose up --build"
+genschema = "uv run manage.py spectacular --color --file schema.yml"

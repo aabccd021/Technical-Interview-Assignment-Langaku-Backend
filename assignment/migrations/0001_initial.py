@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
             CREATE TABLE learning_log  (
                 request_id UUID PRIMARY KEY,
                 user_id TEXT NOT NULL,
-                word_count INTEGER NOT NULL,
+                word_count INTEGER NOT NULL CHECK (word_count >= 0),
                 timestamp TIMESTAMP NOT NULL
             );
             """,

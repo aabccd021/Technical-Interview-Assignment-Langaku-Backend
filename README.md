@@ -7,9 +7,6 @@
 ## Initial Setup
 
 ```sh
-# install dependencies
-uv sync --all-groups
-
 # run test
 uv run poe test
 
