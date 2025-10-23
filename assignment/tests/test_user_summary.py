@@ -71,3 +71,26 @@ def test_recordsjson_multiuser():
         {"period": "2024-01-02T00:00:00Z", "average_words_learned": 50.0},
         {"period": "2024-01-03T00:00:00Z", "average_words_learned": 0.0},
     ]
+
+
+@pytest.mark.django_db
+def test_user_summary_single_day():
+    client = APIClient()
+    client.post(
+        "/recordsjson",
+        {
+            "request_id": str(uuid.uuid4()),
+            "user_id": "langaku",
+            "word_count": 100,
+            "timestamp": "2024-01-15T09:00:00Z",
+        },
+    )
+
+    response = client.get(
+        "/users/langaku/summary",
+        {"from": "2024-01-15", "to": "2024-01-15", "granularity": "day"},
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == [
+        {"period": "2024-01-15T00:00:00Z", "average_words_learned": 100.0},
+    ]

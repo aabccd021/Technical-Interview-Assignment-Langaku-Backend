@@ -90,7 +90,6 @@ def user_summary(request, user_id):
             LEFT JOIN learning_log l
                 ON DATE_TRUNC(%(granularity)s, l.timestamp) = p.period
                 AND l.user_id = %(user_id)s
-                AND l.timestamp BETWEEN %(from_date)s AND %(to_date)s
             GROUP BY p.period
             ORDER BY p.period;            
             """,
