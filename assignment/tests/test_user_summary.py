@@ -24,5 +24,7 @@ def test_recordsjson_with_timestamp_success():
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.data == [
+        {"period": "2024-01-01T00:00:00Z", "average_words_learned": 0.0},
         {"period": "2024-01-02T00:00:00Z", "average_words_learned": 42.0},
+        {"period": "2024-01-03T00:00:00Z", "average_words_learned": 0.0},
     ]

@@ -75,16 +75,52 @@ def user_summary(request, user_id):
 
     with connection.cursor() as cursor:
         cursor.execute(
+            # """
+            # SELECT
+            #     DATE_TRUNC(%(granularity)s, timestamp) AS period,
+            #     AVG(word_count) AS average_words_learned
+            # FROM learning_log
+            # WHERE user_id = %(user_id)s
+            #   AND timestamp BETWEEN %(from_date)s AND %(to_date)s
+            # GROUP BY period
+            # ORDER BY period;
+            # """,
+            # WITH periods AS (
+            #     SELECT generate_series(
+            #         DATE_TRUNC('day', %s::timestamp),
+            #         DATE_TRUNC('day', %s::timestamp),
+            #         INTERVAL '1 day'
+            #     ) AS period
+            # )
+            # SELECT
+            #     p.period,
+            #     COALESCE(avg(l.word_count), 0) AS average_word_count
+            # FROM periods p
+            # LEFT JOIN learning_log l
+            #     ON DATE_TRUNC('day', l.timestamp) = p.period
+            #     AND l.user_id = %s
+            #     AND l.timestamp BETWEEN %s AND %s
+            # GROUP BY p.period
+            # ORDER BY p.period;
             """
-            SELECT
-                DATE_TRUNC(%(granularity)s, timestamp) AS period,
-                AVG(word_count) AS average_words_learned
-            FROM learning_log
-            WHERE user_id = %(user_id)s 
-              AND timestamp BETWEEN %(from_date)s AND %(to_date)s
-            GROUP BY period
-            ORDER BY period;
-            """,
+WITH periods AS (
+    SELECT generate_series(
+        DATE_TRUNC(%(granularity)s, %(from_date)s::timestamp),
+        DATE_TRUNC(%(granularity)s, %(to_date)s::timestamp),
+        ('1 ' || %(granularity)s)::interval
+    ) AS period
+)
+SELECT
+    p.period,
+    COALESCE(AVG(l.word_count), 0) AS average_words_learned
+FROM periods p
+LEFT JOIN learning_log l
+    ON DATE_TRUNC(%(granularity)s, l.timestamp) = p.period
+    AND l.user_id = %(user_id)s
+    AND l.timestamp BETWEEN %(from_date)s AND %(to_date)s
+GROUP BY p.period
+ORDER BY p.period;            
+""",
             {
                 "user_id": user_id,
                 "from_date": from_date,
