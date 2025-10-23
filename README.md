@@ -13,8 +13,8 @@ uv sync --all-groups
 # run test
 uv run poe test
 
-# start dev server on localhost:8000
-uv run poe start
+# start dev server on http://127.0.0.1:8000
+uv run poe dev
 
 # lint code
 uv run poe lint
