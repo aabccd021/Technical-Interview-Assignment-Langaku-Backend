@@ -94,3 +94,19 @@ def test_user_summary_single_day():
     assert response.data == [
         {"period": "2024-01-15T00:00:00Z", "average_words_learned": 100.0},
     ]
+
+
+@pytest.mark.django_db
+def test_user_summary_no_activity():
+    client = APIClient()
+
+    response = client.get(
+        "/users/emptyuser/summary",
+        {"from": "2024-01-01", "to": "2024-01-03", "granularity": "day"},
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == [
+        {"period": "2024-01-01T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-02T00:00:00Z", "average_words_learned": 0.0},
+        {"period": "2024-01-03T00:00:00Z", "average_words_learned": 0.0},
+    ]
