@@ -19,7 +19,12 @@ def recordsjson(request):
                 """,
                 [request_id, user_id, word_count],
             )
-        return Response("OK", status=status.HTTP_201_CREATED)
+        return Response(None, status=status.HTTP_201_CREATED)
+    except IntegrityError:
+        return Response(
+            {"detail": "Duplicate request_id."},
+            status=status.HTTP_409_CONFLICT,
+        )
     except Exception as e:
         print(e)
         return Response(
