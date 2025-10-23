@@ -4,7 +4,11 @@ from rest_framework.response import Response
 from django.db import connection, IntegrityError
 from drf_spectacular.utils import extend_schema
 
-from .serializers import RecordsJsonSerializer, UserSummaryQuerySerializer
+from .serializers import (
+    RecordsJsonSerializer,
+    UserSummaryQuerySerializer,
+    UserSummaryResponseSerializer,
+)
 
 
 @extend_schema(
@@ -47,6 +51,7 @@ def recordsjson(request):
 
 @extend_schema(
     parameters=[UserSummaryQuerySerializer],
+    responses={200: UserSummaryResponseSerializer},
 )
 @api_view(["GET"])
 def user_summary(request, user_id):

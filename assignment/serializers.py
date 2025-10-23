@@ -12,3 +12,8 @@ class UserSummaryQuerySerializer(serializers.Serializer):
     vars()["from"] = serializers.DateTimeField()
     to = serializers.DateTimeField()
     granularity = serializers.ChoiceField(choices=["hour", "day", "month"])
+
+
+class UserSummaryResponseSerializer(serializers.ListSerializer):
+    period = serializers.DateTimeField()
+    granularity = serializers.ChoiceField(choices=["hour", "day", "month"])
