@@ -25,4 +25,5 @@ DJANGO_SETTINGS_MODULE = "assignment.settings"
 [tool.poe.tasks]
 lint = "ruff check --fix ."
 format = "ruff format ."
-test = "pytest"
+pytest = "pytest"
+test = "docker compose run --rm web sh -c 'uv run manage.py migrate && uv run poe pytest'"
