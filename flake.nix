@@ -2,7 +2,6 @@
   description = "A very basic flake";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-  inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
 
   inputs.uv2nix.url = "github:pyproject-nix/uv2nix";
   inputs.uv2nix.inputs.pyproject-nix.follows = "pyproject-nix";
@@ -22,11 +21,6 @@
       pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
       lib = pkgs.lib;
-
-      treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs {
-        programs.nixfmt.enable = true;
-        programs.ruff-format.enable = true;
-      };
 
       workspace = inputs.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
 
@@ -55,8 +49,6 @@
 
     in
     {
-
-      formatter.x86_64-linux = treefmtEval.config.build.wrapper;
 
       devShells.x86_64-linux.default = pkgs.mkShellNoCC {
         packages = [
